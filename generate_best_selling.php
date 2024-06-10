@@ -31,7 +31,7 @@
         $result = $con->query($sql);
     
         if ($result->num_rows > 0) {
-            echo "<table class='table table-bordered' style='margin-top: 30px;'>";
+            echo "<table class='table table-bordered table-striped' style='margin-top: 30px;'>";
             echo "<thead>";
             echo "<tr>";
             echo "<th scope='col'>#</th>";
@@ -56,7 +56,24 @@
         }
     } else {
         // Tampilkan pesan bahwa penjual belum berlangganan
-        echo "<button type='button' class='btn btn-primary mt-3' data-bs-toggle='modal' data-bs-target='#subscriptionModal'>Subscribe to View</button>";
+        echo"<div class='subscription-message' style='margin-top: 30px;'>
+                <div class='alert alert-danger' role='alert'>
+                    <strong>Sorry!</strong> To access this feature, you need to subscribe. <br>
+                    By subscribing, you'll get full access to our premium features. Please consider subscribing to enjoy all the benefits.
+                </div>
+            </div>";
+    
+                // Mendefinisikan variabel untuk warna dan gaya CSS
+        $bg_color = "#465892";
+        $text_color = "#fff3e3";
+
+        // Membuat gaya CSS untuk efek hover
+        $hover_style = "color: $text_color; background-color: $bg_color;";
+
+        // Tombol dengan efek hover
+        echo "<button type='button' class='btn mt-3' data-bs-toggle='modal' data-bs-target='#subscriptionModal' 
+        style='color: $text_color; background-color: $bg_color;' onmouseout=\"this.style.backgroundColor='$bg_color'; 
+        this.style.color='$text_color';\" onmouseover=\"this.style.backgroundColor='#2d3a5f'; this.style.color='$text_color';\">Subscribe to View</button>";
     }
 
     $stmt->close();
