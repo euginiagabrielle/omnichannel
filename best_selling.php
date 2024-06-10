@@ -25,7 +25,7 @@
             font-family: 'Poppins', sans-serif;
         }
         .header {
-            background-color: #546da6;
+            background: linear-gradient(to right, #465892, #2d3a5f);
             height: 110px;
         }
         .header1 {
@@ -33,8 +33,13 @@
             justify-content: center;
             color: #ffffff;
         }
-        .filterperiod {
-            margin: 20px 400px 20px 400px;
+        #btn-subs {
+            background-color: #465892;
+            color: #fff3e3;
+        }
+        #btn-subs:hover {
+            background-color: #2d3a5f;
+            color: #fff3e3;
         }
     </style>
 </head>
@@ -77,7 +82,7 @@
                     <li><a class="dropdown-item" href="#">Profile</a></li>
                     <li><a class="dropdown-item" href="#">Settings</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="login_seller.php">Logout</a></li>
+                    <li><a class="dropdown-item" href="logout.php?logout">Logout</a></li>
                 </ul>
             </div>
     </nav>
@@ -111,7 +116,7 @@
                             <h5 class="card-title" style="font-weight: bold">3 Months</h5>
                             <p class="card-text">Get access for 3 months and save!</p>
                             <p class="card-text">Price: Rp 299.000</p>
-                            <button type="button" class="btn btn-primary btn-block">Subscribe Now</button>
+                            <button type="button" class="btn btn-block" id="btn-subs">Subscribe Now</button>
                         </div>
                         </div>
                     </div>
@@ -121,7 +126,7 @@
                             <h5 class="card-title" style="font-weight: bold">6 Months</h5>
                             <p class="card-text">Get access for 6 months and save even more!</p>
                             <p class="card-text">Price: Rp 499.000</p>
-                            <button type="button" class="btn btn-primary btn-block">Subscribe Now</button>
+                            <button type="button" class="btn btn-block" id="btn-subs">Subscribe Now</button>
                         </div>
                         </div>
                     </div>
@@ -131,7 +136,7 @@
                             <h5 class="card-title" style="font-weight: bold">12 Months</h5>
                             <p class="card-text">Get access for a whole year and save the most!</p>
                             <p class="card-text">Price: Rp 799.000</p>
-                            <button type="button" class="btn btn-primary btn-block">Subscribe Now</button>
+                            <button type="button" class="btn btn-block" id="btn-subs">Subscribe Now</button>
                         </div>
                         </div>
                     </div>
