@@ -25,7 +25,7 @@
             font-family: 'Poppins', sans-serif;
         }
         .header {
-            background: linear-gradient(to right, #465892, #2d3a5f);
+            background-color: #546da6;
             height: 200px;
         }
         .header1 {
@@ -34,12 +34,15 @@
             color: #ffffff;
         }
         .filterperiod {
+            margin: 30px 400px 20px 400px;
+        }
+        .dynamic-inputs {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 30px 400px 30px 400px;
+            justify-content: center;
+            margin: 30px 50px 30px 50px;
         }
         #generate-btn {
+            margin-top: 24px;
             color: #fff3e3;
             background-color: #546da6;
         }
@@ -48,7 +51,7 @@
             background-color: #465892;
         }
         .table-container {
-            margin: 30px 50px;
+            margin: 30px 50px 30px 50px;
         }
     </style>
 </head>
@@ -66,7 +69,7 @@
                         <a class="nav-link" aria-current="page" href="#">Product</a>
                     </li>
                     <li class="nav-item"  style='margin-left: 5px;'>
-                        <a class="nav-link" href="#">Order</a>
+                        <a class="nav-link" href="order.php">Order</a>
                     </li>
                     <li class="nav-item dropdown" style='margin-left: 5px;'>
                         <a class="nav-link active dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -91,7 +94,7 @@
                     <li><a class="dropdown-item" href="#">Profile</a></li>
                     <li><a class="dropdown-item" href="#">Settings</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="logout.php?logout">Logout</a></li>
+                    <li><a class="dropdown-item" href="login_seller.php">Logout</a></li>
                 </ul>
             </div>
     </nav>
@@ -107,27 +110,32 @@
                     <option value="2">Monthly</option>
                     <option value="3">Yearly</option>
                 </select>
-                <div id="dynamic-inputs" class="d-flex flex-column align-items-center"></div>
+                <div id="dynamic-inputs"></div>
+                <button id="generate-btn" class="btn">Generate Report</button>
             </div>
         </div>
-        <div class="table-container" id="table-container"  style="margin-top: 150px;"></div>
+        <div class="table-container" id="table-container"></div>
     </div>
 
     <script>
         $(document).ready(function() {
+            $('#generate-btn').hide();
+
             $('#period-select').change(function() {
                 var period = $(this).val();
                 var dynamicInputs = $('#dynamic-inputs');
                 var generateBtn = $('#generate-btn');
-                var tableContainer = $('#table-container');
 
                 dynamicInputs.empty();
-                tableContainer.empty();
 
                 if (period == '1') { // Daily
-                    dynamicInputs.append('<div class="d-flex justify-content-between" style="margin-top: 70px;"><div class="start"><label for="start-date">Start Date:</label><input type="date" id="start-date" class="form-control" style="width: 400px;"></div><div class="end"><label for="end-date">End Date:</label><input type="date" id="end-date" class="form-control" style="width: 400px; margin-left: 10px;"></div><button id="generate-btn" class="btn btn-primary mt-4" style="margin-left: 10px; height: 38px;">Generate</button></div>');
+                    dynamicInputs.append('<label for="start-date">Start Date:</label>');
+                    dynamicInputs.append('<input type="date" id="start-date" class="form-control">');
+                    dynamicInputs.append('<label for="end-date">End Date:</label>');
+                    dynamicInputs.append('<input type="date" id="end-date" class="form-control">');
                 } else if (period == '2') { // Monthly
-                    dynamicInputs.append('<div class="d-flex justify-content-between" style="margin-top: 70px;"><div class="month"><label for="month">Month:</label><select id="month" class="form-select" style="width: 400px;">'+
+                    dynamicInputs.append('<label for="month">Month:</label>');
+                    dynamicInputs.append('<select id="month" class="form-select">'+
                         '<option value="1">January</option>'+
                         '<option value="2">February</option>'+
                         '<option value="3">March</option>'+
@@ -140,53 +148,59 @@
                         '<option value="10">October</option>'+
                         '<option value="11">November</option>'+
                         '<option value="12">December</option>'+
-                    '</select></div><div class="year"><label for="year">Year:</label><input type="number" id="year" class="form-control" min="2000" max="2100" style="width: 400px; margin-left: 10px;"></div><button id="generate-btn" class="btn btn-primary mt-4" style="margin-left: 10px; height: 38px;">Generate</button></div>');
+                    '</select>');
+                    dynamicInputs.append('<label for="year">Year:</label>');
+                    dynamicInputs.append('<input type="number" id="year" class="form-control" min="2000" max="2100">');
                 } else if (period == '3') { // Yearly
-                    dynamicInputs.append('<div class="d-flex justify-content-between" style="margin-top: 70px;"><div class="year2"><label for="year">Year:</label><input type="number" id="year" class="form-control" min="2000" max="2100" style="width: 400px;"></div><button id="generate-btn" class="btn btn-primary mt-4" style="margin-left: 10px; height: 38px;">Generate</button></div>');
+                    dynamicInputs.append('<label for="year">Year:</label>');
+                    dynamicInputs.append('<input type="number" id="year" class="form-control" min="2000" max="2100">');
                 }
 
-                $('#generate-btn').off('click').on('click', function() {
-                    var data = { period: period };
+                generateBtn.show();
+            });
 
-                    if (period == '1') { // Daily
-                        data.start_date = $('#start-date').val();
-                        data.end_date = $('#end-date').val();
-                    } else if (period == '2') { // Monthly
-                        data.month = $('#month').val();
-                        data.year = $('#year').val();
-                    } else if (period == '3') { // Yearly
-                        data.year = $('#year').val();
-                    }
+            $('#generate-btn').click(function() {
+                var period = $('#period-select').val();
+                var data = { period: period };
 
-                    $.ajax({
-                        type: "POST",
-                        url: "generate_report.php",
-                        data: data,
-                        dataType: "json",
-                        success: function(response) {
-                            var tableHTML = '<div class="table-data"><table class="table table-bordered">';
-                            tableHTML += '<thead><tr><th>ID Pesanan</th><th>Nama Produk</th><th>Harga</th></tr></thead>';
-                            tableHTML += '<tbody>';
+                if (period == '1') { // Daily
+                    data.start_date = $('#start-date').val();
+                    data.end_date = $('#end-date').val();
+                } else if (period == '2') { // Monthly
+                    data.month = $('#month').val();
+                    data.year = $('#year').val();
+                } else if (period == '3') { // Yearly
+                    data.year = $('#year').val();
+                }
 
-                            for (var i = 0; i < response.data.length; i++) {
-                                tableHTML += '<tr>';
-                                tableHTML += '<td>' + response.data[i].id_pesanan + '</td>';
-                                tableHTML += '<td>' + response.data[i].nama_produk + '</td>';
-                                tableHTML += '<td>' + response.data[i].harga + '</td>';
-                                tableHTML += '</tr>';
-                            }
+                $.ajax({
+                    type: "POST",
+                    url: "generate_report.php",
+                    data: data,
+                    dataType: "json",
+                    success: function(response) {
+                        var tableHTML = '<table class="table table-bordered">';
+                        tableHTML += '<thead><tr><th>ID Pesanan</th><th>Nama Produk</th><th>Harga</th></tr></thead>';
+                        tableHTML += '<tbody>';
 
-                            tableHTML += '</tbody></table></div>';
-
-                            var totalPenjualanHTML = '<h4>Total Penjualan: ' + response.total_penjualan + '</h4>';
-
-                            $('#table-container').html(tableHTML + totalPenjualanHTML);
-                        },
-                        error: function(error) {
-                            console.log("Error fetching data: ", error);
-                            alert("Data not found");
+                        for (var i = 0; i < response.data.length; i++) {
+                            tableHTML += '<tr>';
+                            tableHTML += '<td>' + response.data[i].id_pesanan + '</td>';
+                            tableHTML += '<td>' + response.data[i].nama_produk + '</td>';
+                            tableHTML += '<td>' + response.data[i].harga + '</td>';
+                            tableHTML += '</tr>';
                         }
-                    });
+
+                        tableHTML += '</tbody></table>';
+
+                        var totalPenjualanHTML = '<h4>Total Penjualan: ' + response.total_penjualan + '</h4>';
+
+                        $('#table-container').html(tableHTML + totalPenjualanHTML);
+                    },
+                    error: function(error) {
+                        console.log("Error fetching data: ", error);
+                        alert("Data not found");
+                    }
                 });
             });
         });
