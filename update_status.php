@@ -19,7 +19,9 @@ else{
     $sql_order = $sql_order . "selesai";
 }
 $sql_order = $sql_order . "' WHERE id_pesanan = " . $id . ";";
-echo($sql_order);
+if ($update_type == 3){
+    $sql_order = "DELETE FROM pesanan WHERE id_pesanan = " . $id . ";";
+}
 $con->query($sql_order);
 $con->close();
 header("location:order.php");

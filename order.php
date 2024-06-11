@@ -201,6 +201,13 @@
                                 <button class="btn btn-warning" type="submit">Proses Order</button>
                                 </form> 
                                 `;
+                                tableHTML += ` 
+                                <form action="update_status.php" method="post"> 
+                                <input type="hidden" name="id" value="`+ response[i].id_pesanan +`"> 
+                                <input type="hidden" name="update_type" value="3"> 
+                                <button onclick="return  confirm('Apakah benar anda ingin menolak order ini?')" class="btn btn-danger" type="submit">Tolak Order</button>
+                                </form> 
+                                `;
                             }
                             else if (response[i].status_pesanan == "dalam proses"){
                                 tableHTML += `
@@ -208,6 +215,14 @@
                                 <input type="hidden" name="id" value="`+ response[i].id_pesanan +`"> 
                                 <input type="hidden" name="update_type" value="2"> 
                                 <button class="btn btn-success" type="submit">Selesaikan</button>
+                                </form> 
+                                `;
+                            }
+                            else if (response[i].status_pesanan == "selesai"){
+                                tableHTML += `
+                                <form action="track_order.php" method="post"> 
+                                <input type="hidden" name="id" value="`+ response[i].id_pesanan +`"> 
+                                <button class="btn btn-info" type="submit">Track</button>
                                 </form> 
                                 `;
                             }
