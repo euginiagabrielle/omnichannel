@@ -135,7 +135,7 @@
     <div class="report">
         <div class="header">
             <div class="header1">
-                <h1 style="font-weight: bold; margin-top: 30px;">Order List</h1>
+                <h1 style="font-weight: bold; margin-top: 30px;">Detail Order</h1>
             </div>
             <div class="filters">
                 <div class="filter">
