@@ -86,6 +86,12 @@
             -webkit-transform: rotate(180deg);
             transform: rotate(180deg);
         }
+        .action-btnn {
+            display: flex;
+        }
+        .action-btnn *{
+            padding: 5px 5px;
+        }
     </style>
 </head>
 <body>
@@ -159,17 +165,8 @@
     <script>
         $(document).ready(function() {
             var asc = "ASC";
-            $('#period-select').change(function() {
-                var period = $(this).val();
-                var dynamicInputs = $('#dynamic-inputs');
-                var generateBtn = $('#generate-btn');
-
-                dynamicInputs.empty();
-
-                generateBtn.show();
-            });
-
-            $('#period-select').change(function() {
+            do_ajax = function(){
+                
                 var period = $('#period-select').val();
                 var data = { period: period, asc: asc};
 
@@ -180,7 +177,7 @@
                     data: data,
                     success: function(response) {
                         var tableHTML = '<table class="table table-bordered">';
-                        tableHTML += '<thead><tr><th>ID Pesanan</th><th>Tanggal Pesanan</th><th>Total Harga</th><th>Status Pesanan</th><th>E-Commerce</th></tr></thead>';
+                        tableHTML += '<thead><tr><th>ID Pesanan</th><th>Tanggal Pesanan</th><th>Total Harga</th><th>Status Pesanan</th><th>E-Commerce</th><th>Action</th></tr></thead>';
                         tableHTML += '<tbody>';
 
                         for (var i = 0; i < response.length; i++) {
@@ -190,42 +187,31 @@
                             tableHTML += '<td>' + response[i].total_harga + '</td>';
                             tableHTML += '<td>' + response[i].status_pesanan + '</td>';
                             tableHTML += '<td>' + response[i].id_ecommerce + '</td>';
-                            tableHTML += '</tr>';
-                        }
-
-                        tableHTML += '</tbody></table>';
-
-                        $('#table-container').html(tableHTML);
-                    },
-                    error: function(error) {
-                        console.log("Error fetching data: ", error);
-                        alert("Data not found");
-                    }
-                });
-            });
-            // generate awal
-            {   
-                var period = $('#period-select').val();
-                var data = { period: period, asc: asc};
-
-                $.ajax({
-                    type: "POST",
-                    url: "generate_order.php",
-                    dataType: "json",
-                    data: data,
-                    success: function(response) {
-                        var tableHTML = '<table class="table table-bordered">';
-                        tableHTML += '<thead><tr><th>ID Pesanan</th><th>Tanggal Pesanan</th><th>Total Harga</th><th>Status Pesanan</th><th>E-Commerce</th></tr></thead>';
-                        tableHTML += '<tbody>';
-
-                        for (var i = 0; i < response.length; i++) {
-                            tableHTML += '<tr>';
-                            tableHTML += '<td>' + response[i].id_pesanan + '</td>';
-                            tableHTML += '<td>' + response[i].tgl_pesanan + '</td>';
-                            tableHTML += '<td>' + response[i].total_harga + '</td>';
-                            tableHTML += '<td>' + response[i].status_pesanan + '</td>';
-                            tableHTML += '<td>' + response[i].id_ecommerce + '</td>';
-                            tableHTML += '</tr>';
+                            tableHTML += `<td class="action-btnn"> 
+                            <form action="detail_order.php" method="post"> 
+                            <input type="hidden" name="data" value="`+ response[i].id_pesanan +`"> 
+                            <button class="btn btn-primary" type="submit">Details</button>
+                            </form>
+                            `;
+                            if (response[i].status_pesanan == "belum diproses"){
+                                tableHTML += ` 
+                                <form action="update_status.php" method="post"> 
+                                <input type="hidden" name="id" value="`+ response[i].id_pesanan +`"> 
+                                <input type="hidden" name="update_type" value="1"> 
+                                <button class="btn btn-warning" type="submit">Proses Order</button>
+                                </form> 
+                                `;
+                            }
+                            else if (response[i].status_pesanan == "dalam proses"){
+                                tableHTML += `
+                                <form action="update_status.php" method="post"> 
+                                <input type="hidden" name="id" value="`+ response[i].id_pesanan +`"> 
+                                <input type="hidden" name="update_type" value="2"> 
+                                <button class="btn btn-success" type="submit">Selesaikan</button>
+                                </form> 
+                                `;
+                            }
+                            tableHTML += '</td></tr>';
                         }
 
                         tableHTML += '</tbody></table>';
@@ -238,6 +224,23 @@
                     }
                 });
             }
+            $('#period-select').change(function() {
+                var period = $(this).val();
+                var dynamicInputs = $('#dynamic-inputs');
+                var generateBtn = $('#generate-btn');
+
+                dynamicInputs.empty();
+
+                generateBtn.show();
+            });
+
+            $('#period-select').change(function() {
+                do_ajax();
+            });
+            // generate awal
+            {   
+                do_ajax();
+            }
             $(".rotate").click(function(){
                 $(this).toggleClass("down"); 
                 if (asc == "ASC"){
@@ -246,38 +249,8 @@
                 else {
                     asc = "ASC"
                 }
-                var period = $('#period-select').val();
-                var data = { period: period, asc: asc};
 
-                $.ajax({
-                    type: "POST",
-                    url: "generate_order.php",
-                    dataType: "json",
-                    data: data,
-                    success: function(response) {
-                        var tableHTML = '<table class="table table-bordered">';
-                        tableHTML += '<thead><tr><th>ID Pesanan</th><th>Tanggal Pesanan</th><th>Total Harga</th><th>Status Pesanan</th><th>E-Commerce</th></tr></thead>';
-                        tableHTML += '<tbody>';
-
-                        for (var i = 0; i < response.length; i++) {
-                            tableHTML += '<tr>';
-                            tableHTML += '<td>' + response[i].id_pesanan + '</td>';
-                            tableHTML += '<td>' + response[i].tgl_pesanan + '</td>';
-                            tableHTML += '<td>' + response[i].total_harga + '</td>';
-                            tableHTML += '<td>' + response[i].status_pesanan + '</td>';
-                            tableHTML += '<td>' + response[i].id_ecommerce + '</td>';
-                            tableHTML += '</tr>';
-                        }
-
-                        tableHTML += '</tbody></table>';
-
-                        $('#table-container').html(tableHTML);
-                    },
-                    error: function(error) {
-                        console.log("Error fetching data: ", error);
-                        alert("Data not found");
-                    }
-                });
+                do_ajax();
             });
         });
     </script>

@@ -103,7 +103,7 @@
                         <a class="nav-link" aria-current="page" href="#">Product</a>
                     </li>
                     <li class="nav-item"  style='margin-left: 5px;'>
-                        <a class="nav-link active" href="#">Order</a>
+                        <a class="nav-link active" href="order.php">Order</a>
                     </li>
                     <li class="nav-item dropdown" style='margin-left: 5px;'>
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -142,10 +142,9 @@
                     <select class="form-select" id="period-select" aria-label="Default select example">
                         <option value="0" selected>Sort By</option>
                         <option value="1">ID</option>
-                        <option value="2">Tanggal</option>
-                        <option value="3">E-Commerce</option>
-                        <option value="4">Status Pesanan</option>
-                        <option value="5">Total Harga</option>
+                        <option value="2">Nama Produk</option>
+                        <option value="3">Jumlah</option>
+                        <option value="4">Harga</option>
                     </select>
                     <div id="dynamic-inputs"></div>
                 </div>
@@ -160,6 +159,41 @@
     <script>
         $(document).ready(function() {
             var asc = "ASC";
+            do_ajax = function(){
+                var id = "<?php echo( $_POST['data'] )?>";
+                var period = $('#period-select').val();
+                var data = { period: period, asc: asc, id: id};
+
+                $.ajax({
+                    type: "POST",
+                    url: "generate_detail.php",
+                    dataType: "json",
+                    data: data,
+                    success: function(response) {
+                        var tableHTML = '<table class="table table-bordered">';
+                        tableHTML += '<thead><tr><th>ID Detail</th><th>Nama Produk</th><th>Jumlah</th><th>Harga</th></tr></thead>';
+                        tableHTML += '<tbody>';
+
+                        for (var i = 0; i < response.length; i++) {
+                            tableHTML += '<tr>';
+                            tableHTML += '<td>' + response[i].id_detail + '</td>';
+                            tableHTML += '<td>' + response[i].nama_produk + '</td>';
+                            tableHTML += '<td>' + response[i].jumlah + '</td>';
+                            tableHTML += '<td>' + response[i].harga + '</td>';
+                            tableHTML += '</tr>';
+                        }
+
+                        tableHTML += '</tbody></table>';
+
+                        $('#table-container').html(tableHTML);
+                    },
+                    error: function(error) {
+                        console.log("Error fetching data: ", error);
+                        alert("Data not found");
+                    }
+                });
+            };
+
             $('#period-select').change(function() {
                 var period = $(this).val();
                 var dynamicInputs = $('#dynamic-inputs');
@@ -171,73 +205,12 @@
             });
 
             $('#period-select').change(function() {
-                var period = $('#period-select').val();
-                var data = { period: period, asc: asc};
+                do_ajax();
 
-                $.ajax({
-                    type: "POST",
-                    url: "generate_order.php",
-                    dataType: "json",
-                    data: data,
-                    success: function(response) {
-                        var tableHTML = '<table class="table table-bordered">';
-                        tableHTML += '<thead><tr><th>ID Pesanan</th><th>Tanggal Pesanan</th><th>Total Harga</th><th>Status Pesanan</th><th>E-Commerce</th></tr></thead>';
-                        tableHTML += '<tbody>';
-
-                        for (var i = 0; i < response.length; i++) {
-                            tableHTML += '<tr>';
-                            tableHTML += '<td>' + response[i].id_pesanan + '</td>';
-                            tableHTML += '<td>' + response[i].tgl_pesanan + '</td>';
-                            tableHTML += '<td>' + response[i].total_harga + '</td>';
-                            tableHTML += '<td>' + response[i].status_pesanan + '</td>';
-                            tableHTML += '<td>' + response[i].id_ecommerce + '</td>';
-                            tableHTML += '</tr>';
-                        }
-
-                        tableHTML += '</tbody></table>';
-
-                        $('#table-container').html(tableHTML);
-                    },
-                    error: function(error) {
-                        console.log("Error fetching data: ", error);
-                        alert("Data not found");
-                    }
-                });
             });
             // generate awal
             {   
-                var period = $('#period-select').val();
-                var data = { period: period, asc: asc};
-
-                $.ajax({
-                    type: "POST",
-                    url: "generate_order.php",
-                    dataType: "json",
-                    data: data,
-                    success: function(response) {
-                        var tableHTML = '<table class="table table-bordered">';
-                        tableHTML += '<thead><tr><th>ID Pesanan</th><th>Tanggal Pesanan</th><th>Total Harga</th><th>Status Pesanan</th><th>E-Commerce</th></tr></thead>';
-                        tableHTML += '<tbody>';
-
-                        for (var i = 0; i < response.length; i++) {
-                            tableHTML += '<tr>';
-                            tableHTML += '<td>' + response[i].id_pesanan + '</td>';
-                            tableHTML += '<td>' + response[i].tgl_pesanan + '</td>';
-                            tableHTML += '<td>' + response[i].total_harga + '</td>';
-                            tableHTML += '<td>' + response[i].status_pesanan + '</td>';
-                            tableHTML += '<td>' + response[i].id_ecommerce + '</td>';
-                            tableHTML += '</tr>';
-                        }
-
-                        tableHTML += '</tbody></table>';
-
-                        $('#table-container').html(tableHTML);
-                    },
-                    error: function(error) {
-                        console.log("Error fetching data: ", error);
-                        alert("Data not found");
-                    }
-                });
+                do_ajax();
             }
             $(".rotate").click(function(){
                 $(this).toggleClass("down"); 
@@ -247,38 +220,8 @@
                 else {
                     asc = "ASC"
                 }
-                var period = $('#period-select').val();
-                var data = { period: period, asc: asc};
 
-                $.ajax({
-                    type: "POST",
-                    url: "generate_order.php",
-                    dataType: "json",
-                    data: data,
-                    success: function(response) {
-                        var tableHTML = '<table class="table table-bordered">';
-                        tableHTML += '<thead><tr><th>ID Pesanan</th><th>Tanggal Pesanan</th><th>Total Harga</th><th>Status Pesanan</th><th>E-Commerce</th></tr></thead>';
-                        tableHTML += '<tbody>';
-
-                        for (var i = 0; i < response.length; i++) {
-                            tableHTML += '<tr>';
-                            tableHTML += '<td>' + response[i].id_pesanan + '</td>';
-                            tableHTML += '<td>' + response[i].tgl_pesanan + '</td>';
-                            tableHTML += '<td>' + response[i].total_harga + '</td>';
-                            tableHTML += '<td>' + response[i].status_pesanan + '</td>';
-                            tableHTML += '<td>' + response[i].id_ecommerce + '</td>';
-                            tableHTML += '</tr>';
-                        }
-
-                        tableHTML += '</tbody></table>';
-
-                        $('#table-container').html(tableHTML);
-                    },
-                    error: function(error) {
-                        console.log("Error fetching data: ", error);
-                        alert("Data not found");
-                    }
-                });
+                do_ajax();
             });
         });
     </script>
